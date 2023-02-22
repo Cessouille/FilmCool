@@ -9,7 +9,7 @@ using FilmCool.Models.EntityFramework;
 
 namespace FilmCool.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UtilisateursController : ControllerBase
     {
@@ -29,9 +29,25 @@ namespace FilmCool.Controllers
 
         // GET: api/Utilisateurs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Utilisateur>> GetUtilisateur(int id)
+        [ActionName("GetUtilisateurById")]
+        public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
             var utilisateur = await _context.Utilisateurs.FindAsync(id);
+
+            if (utilisateur == null)
+            {
+                return NotFound();
+            }
+
+            return utilisateur;
+        }
+
+        // GET: api/Utilisateurs/5
+        [HttpGet("{email}")]
+        [ActionName("GetUtilisateurByEmail")]
+        public async Task<ActionResult<Utilisateur>> GetUtilisateurByEmail(string email)
+        {
+            var utilisateur = (await _context.Utilisateurs.Where(e => e.Mail == email).ToListAsync<Utilisateur>()).FirstOrDefault();
 
             if (utilisateur == null)
             {

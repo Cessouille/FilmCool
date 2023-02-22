@@ -41,7 +41,7 @@ namespace FilmCool.Models.EntityFramework
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_not_utl");
 
-                entity.HasCheckConstraint("ck_note", "not_note between 0 and 5");
+                entity.HasCheckConstraint("ck_not_note", "not_note between 0 and 5");
             });
 
             modelBuilder.Entity<Utilisateur>(entity =>
