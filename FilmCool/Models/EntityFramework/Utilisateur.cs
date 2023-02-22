@@ -20,18 +20,21 @@ namespace FilmCool.Models.EntityFramework
         public string? Prenom { get; set; }
 
         [Column("utl_mobile")]
+        [RegularExpression(@"^0[0-9]{9}$", ErrorMessage="Le mobile doit contenir 10 chiffres.")]
         [MinLength(10)]
         [MaxLength(10)]
         public string? Mobile { get; set; }
 
         [Column("utl_mail")]
         [EmailAddress]
-        [StringLength(100)]
+        [MinLength(6)]
+        [StringLength(100, ErrorMessage = "La longueur d'un mail doit être comprise entre 6 et 100 caractères.")]
         [Required]
         public string? Mail { get; set; }
 
         [Column("utl_pwd")]
-        [StringLength(64)]
+        [MinLength(12)]
+        [MaxLength(20)]
         [Required]
         public string? Pwd { get; set; }
 
@@ -40,6 +43,7 @@ namespace FilmCool.Models.EntityFramework
         public string? Rue { get; set; }
 
         [Column("utl_cp")]
+        [RegularExpression(@"^[0-9]{5}$", ErrorMessage = "Le code postal doit contenir 5 chiffres.")]
         [MinLength(5)]
         [MaxLength(5)]
         public string? CodePostal { get; set; }
