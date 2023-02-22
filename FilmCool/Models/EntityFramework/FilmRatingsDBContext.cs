@@ -29,31 +29,48 @@ namespace FilmCool.Models.EntityFramework
             modelBuilder.Entity<Notation>(entity =>
             {
                 entity.HasKey(e => new { e.FilmId, e.UtilisateurId })
-                    .HasName("pk_notation");
+                    .HasName("pk_not");
 
                 entity.HasOne(d => d.FilmNote).WithMany(p => p.NotesFilm)
                     .HasForeignKey(d => d.FilmId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_not_flm");
 
                 entity.HasOne(d => d.UtilisateurNotant).WithMany(p => p.NotesUtilisateur)
                     .HasForeignKey(d => d.UtilisateurId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_not_utl");
+
+                entity.HasCheckConstraint("ck_note", "not_note between 0 and 5");
             });
 
             modelBuilder.Entity<Utilisateur>(entity =>
             {
+                entity.HasKey(b => b.UtilisateurId).HasName("pk_utl");
+
                 entity.Property(b => b.Pays).HasDefaultValue("France");
 
-                entity.Property(b => b.DateCreation).HasDefaultValueSql("now()");
+                entity.Property(b => b.DateCreation).IsRequired().HasDefaultValueSql("now()");
 
-                entity.HasIndex(c => c.Mail).IsUnique();
+                entity.HasIndex(b => b.Mail).IsUnique();
 
-                entity.HasCheckConstraint("ck_mail_not_null", "[utl_mail] not null");
+                entity.Property(b => b.Mobile).HasMaxLength(10).IsFixedLength();
+
+                entity.Property(b => b.CodePostal).HasMaxLength(5).IsFixedLength();
+
+                entity.Property(b => b.DateCreation).HasColumnType("date");
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<Film>(entity =>
+            {
+                entity.HasKey(b => b.FilmId).HasName("pk_flm");
+
+                entity.Property(b => b.Duree).HasColumnType("numeric(3,0)");
+
+                entity.Property(b => b.DateSortie).HasColumnType("date");
+            });
+
+                OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

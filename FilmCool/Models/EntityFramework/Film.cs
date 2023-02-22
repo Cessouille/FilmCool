@@ -19,10 +19,10 @@ namespace FilmCool.Models.EntityFramework
         public string? Resume { get; set; }
 
         [Column("flm_datesortie")]
-        public DateTime DateSortie { get; set; }
+        public DateTime? DateSortie { get; set; }
 
         [Column("flm_duree")]
-        public decimal Duree { get; set; }
+        public decimal? Duree { get; set; }
 
         [Column("flm_genre")]
         [StringLength(30)]

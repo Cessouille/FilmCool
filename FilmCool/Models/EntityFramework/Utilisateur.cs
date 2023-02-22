@@ -16,6 +16,7 @@ namespace FilmCool.Models.EntityFramework
         public string? Nom { get; set; }
 
         [Column("utl_prenom")]
+        [StringLength(50)]
         public string? Prenom { get; set; }
 
         [Column("utl_mobile")]
