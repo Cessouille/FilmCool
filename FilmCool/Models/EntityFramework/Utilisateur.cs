@@ -26,13 +26,14 @@ namespace FilmCool.Models.EntityFramework
         public string? Mobile { get; set; }
 
         [Column("utl_mail")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "La longueur d'un mail doit être comprise entre 6 et 100 caractères.")]
         [MinLength(6)]
-        [StringLength(100, ErrorMessage = "La longueur d'un mail doit être comprise entre 6 et 100 caractères.")]
+        [StringLength(100)]
         [Required]
         public string? Mail { get; set; }
 
         [Column("utl_pwd")]
+        [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,20}$", ErrorMessage = "Le mot de passe doit contenir entre 12 et 20 charactères avec au moins 1 minuscule, 1 majuscule, 1 chiffre et 1 caractère spécial.")]
         [MinLength(12)]
         [MaxLength(20)]
         [Required]

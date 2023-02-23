@@ -22,6 +22,7 @@ namespace FilmCool.Controllers
 
         // GET: api/Utilisateurs
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Utilisateur>))]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
             return await _context.Utilisateurs.ToListAsync();
@@ -30,6 +31,8 @@ namespace FilmCool.Controllers
         // GET: api/Utilisateurs/5
         [HttpGet("{id}")]
         [ActionName("GetUtilisateurById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Utilisateur))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
             var utilisateur = await _context.Utilisateurs.FindAsync(id);
@@ -45,6 +48,8 @@ namespace FilmCool.Controllers
         // GET: api/Utilisateurs/5
         [HttpGet("{email}")]
         [ActionName("GetUtilisateurByEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Utilisateur))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurByEmail(string email)
         {
             var utilisateur = (await _context.Utilisateurs.Where(e => e.Mail == email).ToListAsync<Utilisateur>()).FirstOrDefault();
@@ -60,6 +65,10 @@ namespace FilmCool.Controllers
         // PUT: api/Utilisateurs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IActionResult))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutUtilisateur(int id, Utilisateur utilisateur)
         {
             if (id != utilisateur.UtilisateurId)
@@ -91,16 +100,20 @@ namespace FilmCool.Controllers
         // POST: api/Utilisateurs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Utilisateur))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Utilisateur))]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
             _context.Utilisateurs.Add(utilisateur);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUtilisateur", new { id = utilisateur.UtilisateurId }, utilisateur);
+            return CreatedAtAction("GetUtilisateurs", new { id = utilisateur.UtilisateurId }, utilisateur);
         }
 
         // DELETE: api/Utilisateurs/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
             var utilisateur = await _context.Utilisateurs.FindAsync(id);
