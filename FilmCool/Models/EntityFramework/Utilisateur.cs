@@ -7,6 +7,9 @@ namespace FilmCool.Models.EntityFramework
     [Table("t_e_utilisateur_utl")]
     public partial class Utilisateur
     {
+        public Utilisateur()
+        { }
+
         public Utilisateur(int utilisateurId, string? nom, string? prenom, string? mobile, string? mail, string? pwd, string? rue, string? codePostal, string? ville, string? pays, float? latitude, float? longitude, DateTime dateCreation)
         {
             UtilisateurId = utilisateurId;

@@ -104,6 +104,11 @@ namespace FilmCool.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Utilisateur))]
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Utilisateurs.Add(utilisateur);
             await _context.SaveChangesAsync();
 
