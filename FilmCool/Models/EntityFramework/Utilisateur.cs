@@ -7,6 +7,41 @@ namespace FilmCool.Models.EntityFramework
     [Table("t_e_utilisateur_utl")]
     public partial class Utilisateur
     {
+        public Utilisateur(int utilisateurId, string? nom, string? prenom, string? mobile, string? mail, string? pwd, string? rue, string? codePostal, string? ville, string? pays, float? latitude, float? longitude, DateTime dateCreation)
+        {
+            UtilisateurId = utilisateurId;
+            Nom = nom;
+            Prenom = prenom;
+            Mobile = mobile;
+            Mail = mail;
+            Pwd = pwd;
+            Rue = rue;
+            CodePostal = codePostal;
+            Ville = ville;
+            Pays = pays;
+            Latitude = latitude;
+            Longitude = longitude;
+            DateCreation = dateCreation;
+        }
+
+        public Utilisateur(int utilisateurId, string? nom, string? prenom, string? mobile, string? mail, string? pwd, string? rue, string? codePostal, string? ville, string? pays, float? latitude, float? longitude, DateTime dateCreation, ICollection<Notation> notesUtilisateur)
+        {
+            UtilisateurId = utilisateurId;
+            Nom = nom;
+            Prenom = prenom;
+            Mobile = mobile;
+            Mail = mail;
+            Pwd = pwd;
+            Rue = rue;
+            CodePostal = codePostal;
+            Ville = ville;
+            Pays = pays;
+            Latitude = latitude;
+            Longitude = longitude;
+            DateCreation = dateCreation;
+            NotesUtilisateur = notesUtilisateur;
+        }
+
         [Key]
         [Column("utl_id")]
         public int UtilisateurId { get; set; }
@@ -70,5 +105,42 @@ namespace FilmCool.Models.EntityFramework
 
         [InverseProperty("UtilisateurNotant")]
         public virtual ICollection<Notation> NotesUtilisateur { get; } = new List<Notation>();
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Utilisateur utilisateur &&
+                   UtilisateurId == utilisateur.UtilisateurId &&
+                   Nom == utilisateur.Nom &&
+                   Prenom == utilisateur.Prenom &&
+                   Mobile == utilisateur.Mobile &&
+                   Mail == utilisateur.Mail &&
+                   Pwd == utilisateur.Pwd &&
+                   Rue == utilisateur.Rue &&
+                   CodePostal == utilisateur.CodePostal &&
+                   Ville == utilisateur.Ville &&
+                   Pays == utilisateur.Pays &&
+                   Latitude == utilisateur.Latitude &&
+                   Longitude == utilisateur.Longitude &&
+                   DateCreation == utilisateur.DateCreation;
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(UtilisateurId);
+            hash.Add(Nom);
+            hash.Add(Prenom);
+            hash.Add(Mobile);
+            hash.Add(Mail);
+            hash.Add(Pwd);
+            hash.Add(Rue);
+            hash.Add(CodePostal);
+            hash.Add(Ville);
+            hash.Add(Pays);
+            hash.Add(Latitude);
+            hash.Add(Longitude);
+            hash.Add(DateCreation);
+            return hash.ToHashCode();
+        }
     }
 }
