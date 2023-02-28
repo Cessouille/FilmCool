@@ -31,12 +31,6 @@ namespace FilmCool.Controllers.Tests
 
         }
 
-        //[TestMethod()]
-        //public void UtilisateursControllerTest()
-        //{
-
-        //}
-
         [TestMethod()]
         public async Task GetUtilisateursTestAsync()
         {
