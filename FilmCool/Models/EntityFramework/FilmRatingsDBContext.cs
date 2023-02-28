@@ -6,13 +6,11 @@ namespace FilmCool.Models.EntityFramework
     public partial class FilmRatingsDBContext : DbContext
     {
         public FilmRatingsDBContext()
-        {
-        }
+        { }
 
         public FilmRatingsDBContext(DbContextOptions<FilmRatingsDBContext> options)
             : base(options)
-        {
-        }
+        { }
 
         public virtual DbSet<Notation> Notations { get; set; }
 
