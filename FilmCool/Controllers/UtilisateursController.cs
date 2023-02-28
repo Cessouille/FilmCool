@@ -39,10 +39,12 @@ namespace FilmCool.Controllers
         {
             var utilisateur = dataRepository.GetByIdAsync(id);
             //var utilisateur = await _context.Utilisateurs.FindAsync(id);
-            if (utilisateur == null)
+
+            if (utilisateur.Result == null)
             {
                 return NotFound();
             }
+
             return utilisateur.Result;
         }
 
@@ -57,7 +59,7 @@ namespace FilmCool.Controllers
             var utilisateur = dataRepository.GetByStringAsync(email);
             //var utilisateur = await _context.Utilisateurs.FirstOrDefaultAsync(e => e.Mail.ToUpper() == email.ToUpper());
 
-            if (utilisateur == null)
+            if (utilisateur.Result == null)
             {
                 return NotFound();
             }
