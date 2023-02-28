@@ -22,16 +22,16 @@ namespace FilmCool.Models.DataManager
             filmsDbContext = context;
         }
 
-        public async Task<ActionResult<IEnumerable<Utilisateur>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Utilisateur>>> GetAllAsync()
         {
             return await filmsDbContext.Utilisateurs.ToListAsync();
         }
 
-        public async Task<ActionResult<Utilisateur>> GetById(int id)
+        public async Task<ActionResult<Utilisateur>> GetByIdAsync(int id)
         {
             return await filmsDbContext.Utilisateurs.FirstOrDefaultAsync(u => u.UtilisateurId == id);
         }
-        public async Task<ActionResult<Utilisateur>> GetByString(string mail)
+        public async Task<ActionResult<Utilisateur>> GetByStringAsync(string mail)
         {
             return await filmsDbContext.Utilisateurs.FirstOrDefaultAsync(u => u.Mail.ToUpper() == mail.ToUpper());
         }

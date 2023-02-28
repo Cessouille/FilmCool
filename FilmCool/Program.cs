@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using FilmCool.Models.EntityFramework;
+using FilmCool.Models.DataManager;
+using FilmCool.Models.Repository;
 
 namespace FilmCool
 {
@@ -21,6 +23,7 @@ namespace FilmCool
               options.UseNpgsql(builder.Configuration.GetConnectionString("SeriesDbContext")));*/
             builder.Services.AddDbContext<FilmRatingsDBContext>(options =>
               options.UseNpgsql(builder.Configuration.GetConnectionString("FilmRatingsDbContextRemote")));
+            builder.Services.AddScoped<IDataRepository<Utilisateur>, UtilisateurManager>();
 
             var app = builder.Build();
 

@@ -10,6 +10,8 @@ using FilmCool.Models.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
 using FilmCool.Models.DataManager;
 using FilmCool.Models.Repository;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Moq;
 
 namespace FilmCool.Controllers.Tests
 {
@@ -19,100 +21,225 @@ namespace FilmCool.Controllers.Tests
         private readonly FilmRatingsDBContext _context;
         private readonly UtilisateursController _controller;
         private IDataRepository<Utilisateur> _dataRepository;
+
         public UtilisateursControllerTests()
         {
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;"); // Chaine de connexion à mettre dans les ( )
+            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsBD; uid=postgres; password=postgres;"); // Chaine de connexion à mettre dans les ( )
             _context = new FilmRatingsDBContext(builder.Options);
             _dataRepository = new UtilisateurManager(_context);
-            //_controller = new UtilisateursController(_dataRepository);
+            _controller = new UtilisateursController(_dataRepository);
 
         }
 
+        //[TestMethod()]
+        //public void UtilisateursControllerTest()
+        //{
+
+        //}
+
         [TestMethod()]
-        public void GetUtilisateursTest_Ok()
+        public async Task GetUtilisateursTestAsync()
         {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            List<Utilisateur> lesUtilisateurs = new List<Utilisateur>();
-            // Act
-            var result = _context.Utilisateurs.Where(s => s.UtilisateurId <= 3).ToList();
-            /*lesUtilisateurs.Add(new Utilisateur(1, "Calida", "Lilley", "0653930778", "clilleymd@last.fm", "Toto12345678!", "Impasse des bergeronnettes", "74200", "Allinges", "France", (float)46.344795, (float)6.4885845, new DateTime(2023,02,22), new List<Notation>()));
-            lesUtilisateurs.Add(new Utilisateur(2, "Gwendolin", "Dominguez", "0724970555", "gdominguez0@washingtonpost.com", "Toto12345678!", "Chemin de gom", "73420", "Voglans", "France", (float)45.622154, (float)5.8853216, new DateTime(2023, 02, 22), new List<Notation>()));
-            lesUtilisateurs.Add(new Utilisateur(3, "Randolph", "Richings", "0630271158", "rrichings1@naver.com", "Toto12345678!", "Route des charmottes d'en bas", "74890", "Bons-en-Chablais", "France", (float)46.25732, (float)6.367676, new DateTime(2023, 02, 22), new List<Notation>()));*/
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(IEnumerable<Utilisateur>), "Pas un IEnumerable");
-            CollectionAssert.AreEqual(lesUtilisateurs, result);
+            ActionResult<IEnumerable<Utilisateur>> users = await _controller.GetUtilisateurs();
+            CollectionAssert.AreEqual(_context.Utilisateurs.ToList(), users.Value.ToList(), "La liste renvoyée n'est pas la bonne.");
         }
 
         [TestMethod()]
-        public void GetUtilisateurById_Ok()
+        public async Task GetUtilisateurByIdTest()
         {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            // Act
-            var result = _context.Utilisateurs.Where(c => c.UtilisateurId == 1).FirstOrDefault();
-            /*Utilisateur unUtilisateur = new Utilisateur(1, "Calida", "Lilley", "0653930778", "clilleymd@last.fm", "Toto12345678!", "Impasse des bergeronnettes", "74200", "Allinges", "France", (float)46.344795, (float)6.4885845, new DateTime(2023, 02, 22), new List<Notation>());*/
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(Utilisateur), "Pas un Utilisateur");
-            /*Assert.AreEqual(unUtilisateur, result);*/
+            ActionResult<Utilisateur> user = await _controller.GetUtilisateurById(1);
+            Assert.AreEqual(_context.Utilisateurs.Where(c => c.UtilisateurId == 1).FirstOrDefault(), user.Value, "Utilisateur différent");
         }
 
         [TestMethod()]
-        public void GetUtilisateurById_NonOk()
+        public async Task GetUtilisateurByIdTestFalse()
         {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            // Act
-            var result = _context.Utilisateurs.Where(c => c.UtilisateurId == 2).FirstOrDefault();
-            /*Utilisateur unUtilisateur = new Utilisateur(1, "Calida", "Lilley", "0653930778", "clilleymd@last.fm", "Toto12345678!", "Impasse des bergeronnettes", "74200", "Allinges", "France", (float)46.344795, (float)6.4885845, new DateTime(2023, 02, 22), new List<Notation>());*/
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(Utilisateur), "Pas un Utilisateur");
-            /*Assert.AreNotEqual(unUtilisateur, result);*/
-        }
-
-        [TestMethod()]
-        public void GetUtilisateurByEmail_Ok()
-        {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            // Act
-            var result = _context.Utilisateurs.Where(c => c.Mail == "clilleymd@last.fm").FirstOrDefault();
-            /*Utilisateur unUtilisateur = new Utilisateur(1, "Calida", "Lilley", "0653930778", "clilleymd@last.fm", "Toto12345678!", "Impasse des bergeronnettes", "74200", "Allinges", "France", (float)46.344795, (float)6.4885845, new DateTime(2023, 02, 22), new List<Notation>());*/
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(Utilisateur), "Pas un Utilisateur");
-            /*Assert.AreEqual(unUtilisateur, result);*/
-        }
-
-        [TestMethod()]
-        public void GetUtilisateurByEmail_NonOk()
-        {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            // Act
-            var result = _context.Utilisateurs.Where(c => c.Mail == "gdominguez0@washingtonpost.com").FirstOrDefault();
-            /*Utilisateur unUtilisateur = new Utilisateur(1, "Calida", "Lilley", "0653930778", "clilleymd@last.fm", "Toto12345678!", "Impasse des bergeronnettes", "74200", "Allinges", "France", (float)46.344795, (float)6.4885845, new DateTime(2023, 02, 22), new List<Notation>());*/
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(Utilisateur), "Pas un Utilisateur");
-            /*Assert.AreNotEqual(unUtilisateur, result);*/
+            ActionResult<Utilisateur> user = await _controller.GetUtilisateurById(1);
+            Assert.AreNotEqual(_context.Utilisateurs.Where(c => c.UtilisateurId == 2).FirstOrDefault(), user.Value, "Utilisateur différent");
         }
 
         [TestMethod]
-        public void PostUtilisateur_CreationOK()
+        public void GetUtilisateurById_ExistingIdPassed_ReturnsRightItem_AvecMoq()
         {
             // Arrange
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmsDB; uid=postgres; password=postgres;");
-            FilmRatingsDBContext _context = new FilmRatingsDBContext(builder.Options);
-            UtilisateursController controller = new UtilisateursController(_context);
-            Random rnd = new Random();
-            int chiffre = rnd.Next(1, 1000000000);
+            Utilisateur user = new Utilisateur
+            {
+                UtilisateurId = 1,
+                Nom = "Calida",
+                Prenom = "Lilley",
+                Mobile = "0653930778",
+                Mail = "clilleymd@last.fm",
+                Pwd = "Toto12345678!",
+                Rue = "Impasse des bergeronnettes",
+                CodePostal = "74200",
+                Ville = "Allinges",
+                Pays = "France",
+                Latitude = 46.344795F,
+                Longitude = 6.4885845F
+            };
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            mockRepository.Setup(x => x.GetByIdAsync(1).Result).Returns(user);
+            var userController = new UtilisateursController(mockRepository.Object);
+            // Act
+            var actionResult = userController.GetUtilisateurById(1).Result;
+            // Assert
+            Assert.IsNotNull(actionResult);
+            Assert.IsNotNull(actionResult.Value);
+            Assert.AreEqual(user, actionResult.Value as Utilisateur);
+        }
+
+        [TestMethod]
+        public void GetUtilisateurById_UnknownIdPassed_ReturnsNotFoundResult_AvecMoq()
+        {
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            var userController = new UtilisateursController(mockRepository.Object);
+            // Act
+            var actionResult = userController.GetUtilisateurById(0).Result;
+            // Assert
+            Assert.IsInstanceOfType(actionResult.Result, typeof(NotFoundResult));
+        }
+
+        [TestMethod()]
+        public async Task GetUtilisateurByEmailTest()
+        {
+            ActionResult<Utilisateur> user = await _controller.GetUtilisateurByEmail("kbomea@networksolutions.com");
+            Assert.AreEqual(_context.Utilisateurs.Where(c => c.Mail == "kbomea@networksolutions.com").FirstOrDefault(), user.Value, "Utilisateur différent");
+        }
+
+        [TestMethod()]
+        public async Task GetUtilisateurByEmailTestFale()
+        {
+            ActionResult<Utilisateur> user = await _controller.GetUtilisateurByEmail("kbomea@networksolutions.com");
+            Assert.AreNotEqual(_context.Utilisateurs.Where(c => c.Mail == "mathis.bozon03@gmail.com").FirstOrDefault(), user.Value, "Utilisateur différent");
+        }
+
+        [TestMethod()]
+        public void GetUtilisateurByMail_ExistingIdPassed_ReturnsRightItem_AvecMoq()
+        {
+            // Arrange
+            Utilisateur user = new Utilisateur
+            {
+                UtilisateurId = 1,
+                Nom = "Calida",
+                Prenom = "Lilley",
+                Mobile = "0653930778",
+                Mail = "clilleymd@last.fm",
+                Pwd = "Toto12345678!",
+                Rue = "Impasse des bergeronnettes",
+                CodePostal = "74200",
+                Ville = "Allinges",
+                Pays = "France",
+                Latitude = 46.344795F,
+                Longitude = 6.4885845F
+            };
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            mockRepository.Setup(x => x.GetByStringAsync("clilleymd@last.fm").Result).Returns(user);
+            var userController = new UtilisateursController(mockRepository.Object);
+            // Act
+            var actionResult = userController.GetUtilisateurByEmail("clilleymd@last.fm").Result;
+            // Assert
+            Assert.IsNotNull(actionResult);
+            Assert.IsNotNull(actionResult.Value);
+            Assert.AreEqual(user, actionResult.Value as Utilisateur);
+        }
+
+        [TestMethod]
+        public void GetUtilisateurByMail_UnknownIdPassed_ReturnsNotFoundResult_AvecMoq()
+        {
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            var userController = new UtilisateursController(mockRepository.Object);
+            // Act
+            var actionResult = userController.GetUtilisateurByEmail("-1").Result;
+            // Assert
+            Assert.IsInstanceOfType(actionResult.Result, typeof(NotFoundResult));
+        }
+
+        [TestMethod()]
+        public async Task PutUtilisateurTest()
+        {
+            Utilisateur user = await _context.Utilisateurs.FindAsync(1);
+            user.Nom += "a";
+            await _controller.PutUtilisateur(user.UtilisateurId, user);
+            Utilisateur modifie = await _context.Utilisateurs.FindAsync(1);
+            Assert.AreEqual(user, modifie, "pas les memes");
+        }
+
+        [TestMethod]
+        public void PutUtilisateurTest_AvecMoq()
+        {
             // Le mail doit être unique donc 2 possibilités :
             // 1. on s'arrange pour que le mail soit unique en concaténant un random ou un timestamp
             // 2. On supprime le user après l'avoir créé. Dans ce cas, nous avons besoin d'appeler la méthode DELETE de l’API ou remove du DbSet.
+            Utilisateur user = new Utilisateur()
+            {
+                Nom = "MACHIN",
+                Prenom = "Luc",
+                Mobile = "0606070809",
+                Mail = "machin" + "@gmail.com",
+                Pwd = "Toto1234!",
+                Rue = "Chemin de Bellevue",
+                CodePostal = "74940",
+                Ville = "Annecy-le-Vieux",
+                Pays = "France",
+                Latitude = null,
+                Longitude = null
+            };
+            // Act
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            mockRepository.Setup(x => x.GetByIdAsync(1).Result).Returns(user);
+            var userController = new UtilisateursController(mockRepository.Object);
+            user.Nom = "a";
+            userController.PutUtilisateur(user.UtilisateurId, user);
+            var actionResult = userController.GetUtilisateurById(1).Result;
+            // Assert
+            Assert.IsInstanceOfType(actionResult, typeof(ActionResult<Utilisateur>), "Pas un ActionResult<Utilisateur>");
+            var result = actionResult.Value;
+            Console.WriteLine(result.GetType());
+            Assert.IsInstanceOfType(result, typeof(Utilisateur), "Pas un Utilisateur");
+            user.UtilisateurId = ((Utilisateur)result).UtilisateurId;
+            Assert.AreEqual(user, (Utilisateur)result, "Utilisateurs pas identiques");
+        }
+
+
+        [TestMethod()]
+        public async Task PostUtilisateurTest()
+        {
+            // Arrange
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            var userController = new UtilisateursController(mockRepository.Object);
+            // Le mail doit être unique donc 2 possibilités :
+            // 1. on s'arrange pour que le mail soit unique en concaténant un random ou un timestamp
+            // 2. On supprime le user après l'avoir créé. Dans ce cas, nous avons besoin d'appeler la méthode DELETE de l’API ou remove du DbSet.
+            Utilisateur user = new Utilisateur()
+            {
+                Nom = "MACHIN",
+                Prenom = "Luc",
+                Mobile = "0606070809",
+                Mail = "machin" + "@gmail.com",
+                Pwd = "Toto1234!",
+                Rue = "Chemin de Bellevue",
+                CodePostal = "74940",
+                Ville = "Annecy-le-Vieux",
+                Pays = "France",
+                Latitude = null,
+                Longitude = null
+            };
+            // Act
+            var actionResult = userController.PostUtilisateur(user).Result;
+            // Assert
+            Assert.IsInstanceOfType(actionResult, typeof(ActionResult<Utilisateur>), "Pas un ActionResult<Utilisateur>");
+            Assert.IsInstanceOfType(actionResult.Result, typeof(CreatedAtActionResult), "Pas un CreatedAtActionResult");
+            var result = actionResult.Result as CreatedAtActionResult;
+            Assert.IsInstanceOfType(result.Value, typeof(Utilisateur), "Pas un Utilisateur");
+            user.UtilisateurId = ((Utilisateur)result.Value).UtilisateurId;
+            Assert.AreEqual(user, (Utilisateur)result.Value, "Utilisateurs pas identiques");
+        }
+
+        [TestMethod()]
+        public async Task DeleteUtilisateurTest()
+        {
+            Random rnd = new Random();
+            int chiffre = rnd.Next(1, 1000000000);
             Utilisateur userAtester = new Utilisateur()
             {
                 Nom = "MACHIN",
@@ -127,14 +254,53 @@ namespace FilmCool.Controllers.Tests
                 Latitude = null,
                 Longitude = null
             };
+            EntityEntry<Utilisateur> res = _context.Utilisateurs.Add(userAtester);
+            _context.SaveChanges();
+            IActionResult result = await _controller.DeleteUtilisateur(res.Entity.UtilisateurId);
+            Utilisateur user = _context.Utilisateurs.Where(u => u.UtilisateurId == res.Entity.UtilisateurId).FirstOrDefault();
+            Assert.IsNull(user, "Non");
+
+
+        }
+
+        //[TestMethod]
+        //public void DeleteUtilisateurTest_AvecMoq()
+        //{
+        //    // Arrange
+        //    var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+        //    var userController = new UtilisateursController(mockRepository.Object);
+        //    // Act
+        //    var actionResult = userController.DeleteUtilisateur(1).Result;
+        //    // Assert
+        //    Assert.IsInstanceOfType(actionResult, typeof(NoContentResult), "Pas un NoContentResult"); // Test du type de retour
+        //}
+
+        [TestMethod]
+        public void DeleteUtilisateurTest_AvecMoq()
+        {
+            // Arrange
+            Utilisateur user = new Utilisateur
+            {
+                UtilisateurId = 1,
+                Nom = "Calida",
+                Prenom = "Lilley",
+                Mobile = "0653930778",
+                Mail = "clilleymd@last.fm",
+                Pwd = "Toto12345678!",
+                Rue = "Impasse des bergeronnettes",
+                CodePostal = "74200",
+                Ville = "Allinges",
+                Pays = "France",
+                Latitude = 46.344795F,
+                Longitude = 6.4885845F
+            };
+            var mockRepository = new Mock<IDataRepository<Utilisateur>>();
+            mockRepository.Setup(x => x.GetByIdAsync(1).Result).Returns(user);
+            var userController = new UtilisateursController(mockRepository.Object);
             // Act
-            var result = controller.PostUtilisateur(userAtester).Result; // .Result pour appeler la méthode async de manière synchrone, afin d'attendre l’ajout
+            var actionResult = userController.DeleteUtilisateur(1).Result;
             // Assert
-            Utilisateur? userRecupere = _context.Utilisateurs.Where(u => u.Mail.ToUpper() == userAtester.Mail.ToUpper()).FirstOrDefault(); // On récupère l'utilisateur créé directement dans la BD grace à son mail unique
-            // On ne connait pas l'ID de l’utilisateur envoyé car numéro automatique.
-            // Du coup, on récupère l'ID de celui récupéré et on compare ensuite les 2 users
-            userAtester.UtilisateurId = userRecupere.UtilisateurId;
-            Assert.AreEqual(userRecupere, userAtester, "Utilisateurs pas identiques");
+            Assert.IsInstanceOfType(actionResult, typeof(NoContentResult), "Pas un NoContentResult"); // Test du type de retour
         }
     }
 }

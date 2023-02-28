@@ -10,11 +10,11 @@ namespace FilmCool.Models.Repository
 {
     public interface IDataRepository<TEntity>
     {
-        Task<ActionResult<IEnumerable<Utilisateur>>> GetAll();
-        Task<ActionResult<Utilisateur>> GetById(int id);
-        Task<ActionResult<Utilisateur>> GetByString(string str);
-        void Add(Utilisateur entity);
-        void Update(Utilisateur entityToUpdate, Utilisateur entity);
-        void Delete(Utilisateur entity);
+        Task<ActionResult<IEnumerable<TEntity>>> GetAllAsync();
+        Task<ActionResult<TEntity>> GetByIdAsync(int id);
+        Task<ActionResult<TEntity>> GetByStringAsync(string str);
+        void Add(TEntity entity);
+        void Update(TEntity entityToUpdate, TEntity entity);
+        void Delete(TEntity entity);
     }
 }
