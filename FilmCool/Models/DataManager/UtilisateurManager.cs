@@ -13,20 +13,15 @@ namespace FilmCool.Models.DataManager
     public class UtilisateurManager : IDataRepository<Utilisateur>
     {
         readonly FilmRatingsDBContext? filmsDbContext;
-
-        public UtilisateurManager() 
-        { }
-
+        public UtilisateurManager() { }
         public UtilisateurManager(FilmRatingsDBContext context)
         {
             filmsDbContext = context;
         }
-
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetAllAsync()
         {
             return await filmsDbContext.Utilisateurs.ToListAsync();
         }
-
         public async Task<ActionResult<Utilisateur>> GetByIdAsync(int id)
         {
             return await filmsDbContext.Utilisateurs.FirstOrDefaultAsync(u => u.UtilisateurId == id);
@@ -35,13 +30,12 @@ namespace FilmCool.Models.DataManager
         {
             return await filmsDbContext.Utilisateurs.FirstOrDefaultAsync(u => u.Mail.ToUpper() == mail.ToUpper());
         }
-        public async void Add(Utilisateur entity)
+        public async Task Add(Utilisateur entity)
         {
             await filmsDbContext.Utilisateurs.AddAsync(entity);
             await filmsDbContext.SaveChangesAsync();
         }
-
-        public async void Update(Utilisateur utilisateur, Utilisateur entity)
+        public async Task Update(Utilisateur utilisateur, Utilisateur entity)
         {
             filmsDbContext.Entry(utilisateur).State = EntityState.Modified;
             utilisateur.UtilisateurId = entity.UtilisateurId;
@@ -59,8 +53,7 @@ namespace FilmCool.Models.DataManager
             utilisateur.NotesUtilisateur = entity.NotesUtilisateur;
             await filmsDbContext.SaveChangesAsync();
         }
-
-        public async void Delete(Utilisateur utilisateur)
+        public async Task Delete(Utilisateur utilisateur)
         {
             filmsDbContext.Utilisateurs.Remove(utilisateur);
             await filmsDbContext.SaveChangesAsync();

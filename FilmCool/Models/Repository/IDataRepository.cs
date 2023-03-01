@@ -13,8 +13,8 @@ namespace FilmCool.Models.Repository
         Task<ActionResult<IEnumerable<TEntity>>> GetAllAsync();
         Task<ActionResult<TEntity>> GetByIdAsync(int id);
         Task<ActionResult<TEntity>> GetByStringAsync(string str);
-        void Add(TEntity entity);
-        void Update(TEntity entityToUpdate, TEntity entity);
-        void Delete(TEntity entity);
+        Task Add(TEntity entity);
+        Task Update(TEntity entityToUpdate, TEntity entity);
+        Task Delete(TEntity entity);
     }
 }

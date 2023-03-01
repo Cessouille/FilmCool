@@ -31,7 +31,7 @@ namespace FilmCool.Controllers
 
         // GET: api/Utilisateurs/5
         [HttpGet]
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [ActionName("GetById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,7 +50,7 @@ namespace FilmCool.Controllers
 
         // GET: api/Utilisateurs/toto@titi.fr
         [HttpGet]
-        [Route("[action]/{email}")]
+        [Route("{email}")]
         [ActionName("GetByEmail")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
