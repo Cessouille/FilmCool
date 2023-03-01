@@ -35,13 +35,13 @@ namespace FilmCool.Models.DataManager
             return await filmsDbContext.Utilisateurs.FirstOrDefaultAsync(u => u.Mail.ToUpper() == mail.ToUpper());
         }
 
-        public async Task Add(Utilisateur entity)
+        public async Task AddAsync(Utilisateur entity)
         {
             await filmsDbContext.Utilisateurs.AddAsync(entity);
             await filmsDbContext.SaveChangesAsync();
         }
 
-        public async Task Update(Utilisateur utilisateur, Utilisateur entity)
+        public async Task UpdateAsync(Utilisateur utilisateur, Utilisateur entity)
         {
             filmsDbContext.Entry(utilisateur).State = EntityState.Modified;
             utilisateur.UtilisateurId = entity.UtilisateurId;
@@ -60,7 +60,7 @@ namespace FilmCool.Models.DataManager
             await filmsDbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Utilisateur utilisateur)
+        public async Task DeleteAsync(Utilisateur utilisateur)
         {
             filmsDbContext.Utilisateurs.Remove(utilisateur);
             await filmsDbContext.SaveChangesAsync();

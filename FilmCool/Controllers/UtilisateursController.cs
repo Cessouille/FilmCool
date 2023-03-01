@@ -89,7 +89,7 @@ namespace FilmCool.Controllers
 
             else
             {
-                dataRepository.Update(userToUpdate.Result.Value, utilisateur);
+                dataRepository.UpdateAsync(userToUpdate.Result.Value, utilisateur);
                 return NoContent();
             }
         }
@@ -106,7 +106,7 @@ namespace FilmCool.Controllers
                 return BadRequest(ModelState);
             }
 
-            dataRepository.Add(utilisateur);
+            dataRepository.AddAsync(utilisateur);
 
             return CreatedAtAction("GetById", new { id = utilisateur.UtilisateurId }, utilisateur); // GetById : nom de l’action
         }
@@ -124,7 +124,7 @@ namespace FilmCool.Controllers
                 return NotFound();
             }
 
-            dataRepository.Delete(utilisateur.Result.Value);
+            dataRepository.DeleteAsync(utilisateur.Result.Value);
 
             return NoContent();
         }
